@@ -1,6 +1,9 @@
-# Vue 3 + Vite
+# Vue 3 + V
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+TELA INICIAL DO APP
+![image](https://user-images.githubusercontent.com/106501423/230826464-0d0f5475-75dc-4ff0-907e-38610fa01628.png)
+DESENVOLVIMENTO EM ANDAMENTO....
+Este modelo deve ajudá-lo a começar a desenvolver com o Vue 3 no Vite. O modelo usa Vue 3 `<script setup>` SFCs, confira os [documentos de configuração de script](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) para aprender mais.
 
 ## Recommended IDE Setup
 
