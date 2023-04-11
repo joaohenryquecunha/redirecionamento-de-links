@@ -35,7 +35,7 @@
             <h5 class="urlid1">01</h5>
             <h5 class="enderecoURL1">https://www.redirec/g-digital-id=1-0105&t=bc19gdig580142</h5>
             <div class="contadorURL1">
-                <p>05/500</p>
+                <p>05/600</p>
             </div>
                  </div>
                  <div>
