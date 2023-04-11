@@ -19,12 +19,40 @@
                         <h3>{{ selectedUrl.title_link }}</h3>
                         <h2>{{ formatdate1(selectedUrl.created_at) }}</h2>
                     </div>
-                    <p>{{ selectedUrl.redirect_url }}</p>
+                    <div class="url-btn-edit">
+                        <p>{{ selectedUrl.redirect_url }}</p>
+                        <button class="btn btn-primary btn-sm btnCopiar"
+                            @click="copyUrl(selectedUrl.redirect_url)">Copiar</button>
+                        <button class="btn btn-primary btn-sm btnEditar" @click="editLink(selectedUrl)">Editar</button>
+                    </div>
+                    <div v-if="showEditFields">
+                        <div class="form-group">
+                            <label for="edit-title">Título:</label>
+                            <input type="text" class="form-control" id="edit-title" v-model="editTitle">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-url">URL:</label>
+                            <input type="text" class="form-control" id="edit-url" v-model="editUrl">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary btn-sm" @click="saveChanges()">Salvar</button>
+                            <button class="btn btn-danger btn-sm" @click="cancelEdit()">Cancelar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <ul>
-                <li v-for="redirect in redirect" :key="redirect.id">{{ redirect.url }}</li>
-            </ul>
+
+            <div class="Sub-links">
+                <div v-for="redirect in redirect.filter(item => item.link_id === selectedUrl.id)" :key="redirect.id">
+                    <div class="card card-sub">
+                        <div class="card-body card-sub-url">
+                            <h4>{{ redirect.id }}</h4>
+                            <h5>{{ redirect.url }}</h5>
+                            <button class="btn btn-primary btn-sm btn-edit-url" @click="editUrl(redirect)">Editar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -36,7 +64,10 @@ export default {
         return {
             link: [],
             selectedUrl: null,
-            redirects: []
+            redirect: [],
+            showEditFields: false,
+            editTitle: "",
+            editUrl: ""
         };
     },
     mounted() {
@@ -78,17 +109,44 @@ export default {
     },
     methods: {
         showDetails(id) {
-            this.selectedUrl = this.link.find(url => url.id === id);
-            fetch(`http://localhost:8000/${id}/redirects`)
+            this.selectedUrl = this.link.find((url) => url.id === id);
+            fetch(`http://localhost:8000/redirect/${id}`)
                 .then(response => response.json())
                 .then(res => {
-                    this.redirects = res;
+                    this.redirect = res.filter((item) => item.link_id === id);
                     console.log(res);
                 });
-        }
+        },
+        copyUrl(url) {
+            const el = document.createElement('textarea');
+            el.value = url;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+        },
+        
+        editLink(link) {
+            this.editTitle = link.title_link;
+            this.editUrl = link.redirect_url;
+            this.showEditFields = true;
+         },
+
+         saveChanges() {
+            this.selectedUrl.title_link = this.editTitle;
+            this.selectedUrl.redirect_url = this.editUrl;
+            this.showEditFields = false;
+         },
+
+         cancelEdit() {
+            this.showEditFields = false;
+         },
     }
+
 };
 </script>
+
+
   
 
 <style scoped>
@@ -96,6 +154,7 @@ export default {
     width: 438px;
     position: relative;
     top: -405px;
+    margin-bottom: 5px;
 }
 
 .title-data {
@@ -149,14 +208,62 @@ export default {
     width: 560px;
     position: relative;
     left: 480px;
-    top: -740px;
+    top: -760px;
 }
+
 .title-date-url {
     position: relative;
     display: flex;
     gap: 150px;
 }
+
 .title-date-url h2 {
-font-size: 18px;
+    font-size: 18px;
+}
+
+.url-btn-edit {
+    position: relative;
+    display: flex;
+    top: 5px;
+    gap: 30px;
+    font-size: 22px;
+}
+
+.btnCopiar {
+    position: relative;
+    right: -130px;
+    height: 40px;
+}
+
+.btnEditar {
+    position: relative;
+    right: -130px;
+    height: 40px;
+}
+
+/*sessão de sub links, são os links que aparecem ao clicar no link principal*/
+.Sub-links {
+    position: relative;
+    left: 480px;
+    top: -300px;
+    list-style: none;
+    font-size: 20px;
+}
+
+.card-sub {
+    width: 54%;
+    margin-bottom: 5px;
+}
+
+.card-sub-url {
+    position: relative;
+    display: flex;
+    gap: 40px;
+
+}
+
+.btn-edit-url {
+    position: relative;
+    right: -400px;
 }
 </style>

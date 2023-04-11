@@ -50,24 +50,7 @@
             </el-drawer>
         </template>
         <ListaLink/>
-        <div class="listaurl">
-            <h5 class="link">LINK 01 </h5>
-            <h5 class="data">Criado em: 01/04/2023 às 10:36</h5>
-            <h4 class="url"></h4>
-            <ElButton class="btnurlC">Copiar</ElButton>
-            <ElButton class="btnurlE">Editar</ElButton>
-
-        </div>
-
-        <div class="subLinks">
-            <h5 class="urlid">01</h5>
-            <h5 class="enderecoURL">https://www.redirec/g-digital-id=1-0105&t=bc19gdig580142</h5>
-            <ElButton class="btnediturl">Editar</ElButton>
-            <div class="contadorURL">
-                <p>05/500</p>
-            </div>
-        </div>
-
+        
     </el-dialog>
 </template>
   
@@ -78,25 +61,7 @@ import ListaLink from '../components/ListaLink.vue';
 const drawer = ref(false)
 const visible = ref(false)
 </script>
-<script>
-export default {
-    name: "App",
-    data() {
-        return {
-            link: [],
-        };
-    },
-    mounted() {
-        fetch("http://localhost:8000/")
-            .then(response => response.json())
-            .then((res) => {
-            this.link = res;
-            return console.log(res);
-        });
-    },
-    components: { ListaLink }
-}
-</script>
+
  
 <style scoped>
 .my-header {
