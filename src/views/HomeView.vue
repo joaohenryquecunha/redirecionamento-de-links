@@ -16,18 +16,19 @@
                     <!-- botão para abrir janela lateral -->
                     <button type="button" class="btn btn-primary " data-bs-toggle="offcanvas"
                         data-bs-target="#createLinkSidebar">
-                        Criar Sublink
+                        Criar Link
                     </button>
                     <ListaLink />
-                    <div class="offcanvas offcanvas-end" tabindex="-1" id="createLinkSidebar"
+                    <div class="offcanvas offcanvas-end custom" tabindex="-1" id="createLinkSidebar"
                         aria-labelledby="createLinkSidebarLabel">
                         <div class="offcanvas-header ">
-                            <h5 class="offcanvas-title" id="createLinkSidebarLabel">Criar Sublink</h5>
+                            <h5 class="offcanvas-title" id="createLinkSidebarLabel">Crie seu Link</h5>
                             <button type="button" class="btn-close text-reset " data-bs-dismiss="offcanvas"
                                 aria-label="Fechar"></button>
                         </div>
                         <div class="offcanvas-body">
-                            <!-- conteúdo da sidebar aqui -->
+                            <CriaLink/>
+                            <h1></h1>
                         </div>
                     </div>
                 </div>
@@ -38,6 +39,7 @@
 
 
 <script setup>
+import CriaLink from '../components/CriaLink.vue';
 import ListaLink from '../components/ListaLink.vue';
 
 
@@ -60,5 +62,8 @@ import ListaLink from '../components/ListaLink.vue';
 
 .modal-dialog {
     width: 1280px;
+}
+.custom {
+    width: 600px;
 }
 </style>

@@ -5,6 +5,7 @@
       <ul>
         <li class="card card-body mb-2" v-for="link in links" :key="link.id" @click="getSublinks(link)" :class="{ active: link.id === selectedLinkId }">
          <p>{{ link.title_link }}  {{ link.redirect_url }}</p> 
+         <h5>{{ link.maximum_cliks }}</h5>
         </li>
       </ul>
     </div>
@@ -50,13 +51,7 @@ export default {
           this.links = data.links;
         });
     },
-    getLinksSub() {
-      fetch('http://localhost:8000/api/links/{id}/sublinks')
-        .then(response => response.json())
-        .then(data => {
-          this.links = data.links;
-        });
-    },
+    
     getSublinks(link) {
       this.selectedLinkId = link.id;
       fetch(`http://localhost:8000/api/links/${link.id}/sublinks`)
@@ -65,6 +60,8 @@ export default {
           this.sublinks = data.sublinks;
         });
     },
+    
+
     editSublink(sublink) {
   const editedSublink = {
     id: sublink.id,
@@ -80,27 +77,26 @@ export default {
     }
     const selectedLink = this.links.find(link => link.id === this.selectedLinkId); 
     fetch(`http://localhost:8000/api/links/${selectedLink.id}/sublinks/${sublink.id}`, {
-  method: 'PUT',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(editedSublink)
-})
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Erro ao atualizar sublink');
-    }
-  })
-  .then(data => {
-    getLinksSub()
-    
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(editedSublink)
     })
-  .catch(error => {
-    console.error('Erro ao atualizar sublink:', error);
-  });
-
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Erro ao atualizar sublink');
+        }
+      })
+      .then(data => {
+        this.getSublinks(selectedLink); 
+        this.sublinks = data.sublinks;
+      })
+      .catch(error => {
+        console.error('Erro ao atualizar sublink:', error);
+      });
   }
 },
     editLink(link) {
