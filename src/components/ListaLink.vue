@@ -26,109 +26,116 @@
 
 <script>
 
-
 export default {
-  data() {
-    return {
-      links: [],
-      sublinks: [],
-      selectedLinkId: null
-    };
-  },
-  mounted() {
-    this.getLinks();
-  },
-  computed: {
-    selectedLink() {
-      return this.links.find(link => link.id === this.selectedLinkId);
-    }
-  },
-  methods: {
-    getLinks() {
-      fetch('http://localhost:8000/api/links/')
-        .then(response => response.json())
-        .then(data => {
-          this.links = data.links;
-        });
-    },
     
-    getSublinks(link) {
-      this.selectedLinkId = link.id;
-      fetch(`http://localhost:8000/api/links/${link.id}/sublinks`)
-        .then(response => response.json())
-        .then(data => {
-          this.sublinks = data.sublinks;
-        });
+    data() {
+        return {
+            links: [],
+            sublinks: [],
+            selectedLinkId: null,
+            title_link: "",
+            redirect_url: "",
+            url: "",
+            max_click: "",
+            sublinks: [],
+        };
     },
+    mounted() {
+        this.getLinks();
+    },
+    computed: {
+        selectedLink() {
+            return this.links.find(link => link.id === this.selectedLinkId);
+        }
+    },
+    methods: {
+        getLinks() {
+            fetch("http://localhost:8000/api/links/")
+                .then(response => response.json())
+                .then(data => {
+                this.links = data.links;
+            });
+        },
+        getSublinks(link) {
+            this.selectedLinkId = link.id;
+            fetch(`http://localhost:8000/api/links/${link.id}/sublinks`)
+                .then(response => response.json())
+                .then(data => {
+                this.sublinks = data.sublinks;
+            });
+        },
+        editSublink(sublink) {
+            const editedSublink = {
+                id: sublink.id,
+                url: sublink.url,
+                max_click: sublink.max_click
+            };
+            const newUrl = prompt("Digite o novo URL para o sublink:", sublink.url);
+            if (newUrl !== null) {
+                editedSublink.url = newUrl;
+                const newClick = prompt("Digite a quantidade de cliques:", sublink.max_click);
+                if (newClick !== null) {
+                    editedSublink.max_click = newClick;
+                }
+                const selectedLink = this.links.find(link => link.id === this.selectedLinkId);
+                fetch(`http://localhost:8000/api/links/${selectedLink.id}/sublinks/${sublink.id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(editedSublink)
+                })
+                    .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    else {
+                        throw new Error("Erro ao atualizar sublink");
+                    }
+                })
+                    .then(data => {
+                    this.getSublinks(selectedLink);
+                    this.sublinks = data.sublinks;
+                    this.getLinks();
+                })
+                    .catch(error => {
+                    console.error("Erro ao atualizar sublink:", error);
+                });
+            }
+        },
+        editLink(link) {
+            const editedLink = {
+                id: link.id,
+                title_link: link.title_link,
+                redirect_url: link.redirect_url
+            };
+            const newTitle = prompt("Digite o novo título para o link:", link.title_link);
+            if (newTitle !== null) {
+                editedLink.title_link = newTitle;
+                const newUrl = prompt("Digite o novo URL de redirecionamento para o link:", link.redirect_url);
+                if (newUrl !== null) {
+                    editedLink.redirect_url = newUrl;
+                    fetch(`http://localhost:8000/api/links/${link.id}/`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(editedLink)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                        this.getLinks();
+                    })
+                        .catch(error => {
+                        console.error("Erro ao atualizar link:", error);
+                    });
+                }
+            }
+        },  
+    },   
+}
+    
     
 
-    editSublink(sublink) {
-  const editedSublink = {
-    id: sublink.id,
-    url: sublink.url,
-    max_click: sublink.max_click
-  };
-  const newUrl = prompt('Digite o novo URL para o sublink:', sublink.url);
-  if (newUrl !== null) {
-    editedSublink.url = newUrl;
-    const newClick = prompt('Digite a quantidade de cliques:', sublink.max_click);
-    if (newClick !== null) {
-      editedSublink.max_click = newClick;
-    }
-    const selectedLink = this.links.find(link => link.id === this.selectedLinkId); 
-    fetch(`http://localhost:8000/api/links/${selectedLink.id}/sublinks/${sublink.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(editedSublink)
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Erro ao atualizar sublink');
-        }
-      })
-      .then(data => {
-        this.getSublinks(selectedLink); 
-        this.sublinks = data.sublinks;
-      })
-      .catch(error => {
-        console.error('Erro ao atualizar sublink:', error);
-      });
-  }
-},
-    editLink(link) {
-      const editedLink = {
-        id: link.id,
-        title_link: link.title_link,
-        redirect_url: link.redirect_url
-      };
-      const newTitle = prompt('Digite o novo título para o link:', link.title_link);
-      if (newTitle !== null) {
-        editedLink.title_link = newTitle;
-        const newUrl = prompt('Digite o novo URL de redirecionamento para o link:', link.redirect_url);
-        if (newUrl !== null) {
-          editedLink.redirect_url = newUrl;
-          fetch(`http://localhost:8000/api/links/${link.id}/`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(editedLink)
-          })
-            .then(response => response.json())
-            .then(data => {
-              this.getLinks();
-            })
-            .catch(error => {
-              console.error('Erro ao atualizar link:', error);
-            });
-        }
-      }
-    }
-  }
-};
 </script>
 
